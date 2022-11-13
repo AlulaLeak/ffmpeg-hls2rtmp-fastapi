@@ -5,12 +5,12 @@ import aiohttp
 
 # Creating FastAPI instance
 app = FastAPI()
- 
+
 # Creating class to define the request body
 class request_body(BaseModel):
     room_name : str
     stream_url : str
- 
+
 # Creating an Endpoint to receive the data
 @app.post('/create')
 async def create(data : request_body):
@@ -18,7 +18,7 @@ async def create(data : request_body):
     # Making the data in a form suitable
     room_name = data.room_name
     stream_url = data.stream_url
-    
+
     # Recieve Secret Key from Broadcase Server
     async with aiohttp.ClientSession() as session:
         async with session.get(f'http://localhost:8090/control/get?room={room_name}') as resp:
