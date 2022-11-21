@@ -14,8 +14,9 @@ class request_body(BaseModel):
 # Creating an Endpoint to receive the data
 @app.post('/create')
 async def create(data : request_body):
+    print('data:', data)
 
-    # Making the data in a form suitable
+    # Making the data in a suitable form
     room_name = data.room_name
     stream_url = data.stream_url
 
@@ -28,4 +29,18 @@ async def create(data : request_body):
     # Start Subprocess (FFMpeg Encoding From HLS to RTMP before sending to Broadcasting Server)
     Popen(["ffmpeg","-re", "-nostdin", "-i", stream_url, "-vcodec", "libx264", "-preset:v", "ultrafast", "-acodec", "aac", "-f", "flv", f"rtmp://localhost:1935/zoo/{secret_key}"])
     # Return the Result
-    return { 'Stream Available At' : f"http://127.0.0.1:7002/zoo/{room_name}.m3u8"}
+    return { 'Stream Available At' : f"http://localhost:3000/game/{room_name}.m3u8"}
+    # return { 'Stream Available At' : f"http://127.0.0.1:7002/zoo/{room_name}.m3u8"}
+
+class copy_request_body(BaseModel):
+    room_name : str
+    stream_url : str
+
+@app.post('/copy')
+async def copy(data: copy_request_body):
+
+    # Making the data in a suitable form
+    room_name = data.room_name
+    stream_url = data.stream_url
+
+    return { 'Stream Available At' : f"http://127.0.0.1:7002/zoo/.m3u8"}
